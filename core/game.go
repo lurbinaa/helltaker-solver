@@ -6,11 +6,11 @@ func (l *Level) CalculateOffset(d Direction) (target Point) {
 	return Point{l.PlayerPos.Y + offset.Y, l.PlayerPos.X + offset.X}
 }
 
-func (l *Level) CheckCollisionBehind(d Direction) bool {
+func (l *Level) CanPushTo(d Direction) bool {
 	offset := DirectionOffsets[d]
-	target := Point{l.PlayerPos.Y + 2*offset.Y, l.PlayerPos.X + 2*offset.X}
-	_, exists := l.Tiles[target]
-	return exists
+	behind := Point{l.PlayerPos.Y + 2*offset.Y, l.PlayerPos.X + 2*offset.X}
+	state, exists := l.Tiles[behind]
+	return exists && state == Empty
 }
 
 func (l *Level) IsValidInput(d Direction) bool {
@@ -19,6 +19,7 @@ func (l *Level) IsValidInput(d Direction) bool {
 	return exists
 }
 
+// returns true if the player is adjacent to the goal
 func (l *Level) CheckWin() bool {
 	for d := range DirectionOffsets {
 		target := l.CalculateOffset(d)
@@ -56,8 +57,8 @@ func (l *Level) PushCollidable(d Direction, o OccupiedState) {
 		l.Tiles[target] = Box
 	} else {
 		l.Tiles[current] = Empty
+		l.Tiles[target] = o
 	}
-	l.Tiles[target] = o
 }
 
 func (l *Level) AttackSkeleton(d Direction) {
@@ -71,19 +72,18 @@ func (l *Level) HandleInput(d Direction) (a Action) {
 
 	switch occupiedState {
 	case Empty:
-		if l.MovesLeft < 3 && l.CheckWin() {
+		l.MovePlayerTo(d)
+		if l.CheckWin() {
 			a = Win
 		} else {
 			a = Move
 		}
-		l.MovePlayerTo(d)
 	case SpecialItem:
 		a = SpecialItemCollect
 		l.SpecialItemsCollected += 1
 		l.MovePlayerTo(d)
-	case Box:
-	case BoxSpecialItem:
-		if !l.CheckCollisionBehind(d) {
+	case Box, BoxSpecialItem:
+		if l.CanPushTo(d) {
 			a = PushBox
 			l.PushCollidable(d, occupiedState)
 		} else {
@@ -91,8 +91,7 @@ func (l *Level) HandleInput(d Direction) (a Action) {
 			// Do nothing
 		}
 	case Skeleton:
-		a = AttackSkeleton
-		if !l.CheckCollisionBehind(d) {
+		if l.CanPushTo(d) {
 			a = PushSkeleton
 			l.PushCollidable(d, occupiedState)
 		} else {
