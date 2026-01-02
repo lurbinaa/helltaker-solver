@@ -1,5 +1,5 @@
 # helltaker-solver
 ### TODO
-- Handling loses
-- Hazards (spikes) implementation
-- Solver implementation
+- [x] Handling loses
+- [ ] Hazards (spikes) implementation
+- [x] Solver implementation

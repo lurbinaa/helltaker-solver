@@ -28,7 +28,7 @@ func ParseRawLevelData(path string) (l Level, err error) {
 			}
 
 			point := Point{Y: y, X: x}
-			state := RawStateToSymbols[char]
+			state := RawStateToSymbol[char]
 			l.Tiles[point] = state
 
 			switch state {
@@ -42,13 +42,40 @@ func ParseRawLevelData(path string) (l Level, err error) {
 	return l, nil
 }
 
-func PrintCoords(t Tiles) {
+func PrintRawLevelData(l *Level) {
+	// check borders
+	maxY, maxX := 0, 0
+	for p := range l.Tiles {
+		if p.Y > maxY {
+			maxY = p.Y
+		}
+		if p.X > maxX {
+			maxX = p.X
+		}
+	}
+
+	fmt.Println(l.MovesLeft)
+
+	for y := 0; y <= maxY; y++ {
+		for x := 0; x <= maxX; x++ {
+			state, exists := l.Tiles[Point{Y: y, X: x}]
+			if !exists {
+				fmt.Print(" ")
+			} else {
+				fmt.Print(string(SymbolToRawState[state]))
+			}
+		}
+		fmt.Println()
+	}
+}
+
+func PrintTiles(t Tiles) {
 	for point, state := range t {
 		fmt.Printf(
 			"(%d, %d): %s\n",
 			point.Y,
 			point.X,
-			OccupiedStates[state],
+			OccupiedStateNames[state],
 		)
 	}
 }

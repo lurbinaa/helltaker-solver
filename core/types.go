@@ -38,6 +38,8 @@ type Point struct {
 	Y, X int
 }
 
+type Tiles map[Point]OccupiedState
+type Directions map[Direction]Point
 type Level struct {
 	PlayerPos             Point
 	MovesLeft             int
@@ -46,10 +48,7 @@ type Level struct {
 	Tiles                 Tiles
 }
 
-type Tiles = map[Point]OccupiedState
-type Directions = map[Direction]Point
-
-var RawStateToSymbols = map[rune]OccupiedState{
+var RawStateToSymbol = map[rune]OccupiedState{
 	'_': Empty,
 	'p': Player,
 	'b': Box,
@@ -59,12 +58,31 @@ var RawStateToSymbols = map[rune]OccupiedState{
 	'g': Goal,
 }
 
-var OccupiedStates = map[OccupiedState]string{
-	Empty:    "Empty",
-	Player:   "Player",
-	Box:      "Box",
-	Skeleton: "Skeleton",
-	Goal:     "Goal",
+var SymbolToRawState = map[OccupiedState]rune{
+	Empty:          '_',
+	Player:         'p',
+	Box:            'b',
+	BoxSpecialItem: 'B',
+	SpecialItem:    'i',
+	Skeleton:       's',
+	Goal:           'g',
+}
+
+var OccupiedStateNames = map[OccupiedState]string{
+	Empty:          "Empty",
+	Player:         "Player",
+	Box:            "Box",
+	BoxSpecialItem: "BoxSpecialItem",
+	SpecialItem:    "SpecialItem",
+	Skeleton:       "Skeleton",
+	Goal:           "Goal",
+}
+
+var DirectionNames = map[Direction]string{
+	Up:    "Up",
+	Right: "Right",
+	Down:  "Down",
+	Left:  "Left",
 }
 
 var DirectionOffsets = Directions{
