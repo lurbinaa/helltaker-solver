@@ -9,17 +9,18 @@ import (
 	"helltaker-solver/core"
 )
 
-func Solve(level *core.Level) ([]core.Direction, bool) {
+func Solve(level *core.Level) (ds []core.Direction, found bool, iters uint) {
 	visited := make(map[string]bool)
-
 	queue := []LevelSnapshot{{
 		Level: CloneLevel(level),
 		Moves: []core.Direction{},
 	}}
+	iters = 0
 
 	for len(queue) > 0 {
 		current := queue[0]
 		queue = queue[1:]
+		iters += 1
 
 		key := SerializeLevel(current.Level)
 		if visited[key] {
@@ -28,7 +29,7 @@ func Solve(level *core.Level) ([]core.Direction, bool) {
 		visited[key] = true
 
 		if current.Level.CheckWin() {
-			return current.Moves, true
+			return current.Moves, true, iters
 		}
 
 		if current.Level.MovesLeft <= 0 {
@@ -40,7 +41,7 @@ func Solve(level *core.Level) ([]core.Direction, bool) {
 			action := level.HandleInput(ds)
 
 			if action == core.Win {
-				return append(current.Moves, ds), true
+				return append(current.Moves, ds), true, iters
 			}
 
 			moves := make([]core.Direction, len(current.Moves)+1)
@@ -54,10 +55,10 @@ func Solve(level *core.Level) ([]core.Direction, bool) {
 		}
 	}
 
-	return nil, false
+	return nil, false, iters
 }
 
-// serialize the level into a string with sorted coordinates
+// Serializes the level into a string with sorted coordinates
 // to check for repeated sequences
 func SerializeLevel(l *core.Level) string {
 	keys := make([]core.Point, 0, len(l.Tiles))

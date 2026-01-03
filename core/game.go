@@ -1,4 +1,4 @@
-// Core logic for recreating Helltaker game mechanics.
+// Core logic for recreating Helltaker game mechanics
 package core
 
 func (l *Level) CalculateOffset(d Direction) (target Point) {
@@ -19,7 +19,7 @@ func (l *Level) IsValidInput(d Direction) bool {
 	return exists
 }
 
-// returns true if the player is adjacent to the goal
+// Returns true if the player is adjacent to the goal
 func (l *Level) CheckWin() bool {
 	for d := range DirectionOffsets {
 		target := l.CalculateOffset(d)
@@ -31,7 +31,11 @@ func (l *Level) CheckWin() bool {
 }
 
 func (l *Level) CheckAllAvailableMoves() (ds []Direction) {
-	for d := range DirectionOffsets {
+	// For some reason, go iterates maps randomly,
+	// with this approach we can achieve a consistent amount of
+	// total queue iterations
+	directions := []Direction{Up, Right, Down, Left}
+	for _, d := range directions {
 		if l.IsValidInput(d) {
 			ds = append(ds, d)
 		}
@@ -52,10 +56,14 @@ func (l *Level) PushCollidable(d Direction, o OccupiedState) {
 	current := l.CalculateOffset(d)
 	// Tile behind
 	target := Point{current.Y + offset.Y, current.X + offset.X}
-	if o == BoxSpecialItem {
+	switch o {
+	case BoxHazard:
+		l.Tiles[current] = Hazard
+		l.Tiles[target] = Box
+	case BoxSpecialItem:
 		l.Tiles[current] = SpecialItem
 		l.Tiles[target] = Box
-	} else {
+	default:
 		l.Tiles[current] = Empty
 		l.Tiles[target] = o
 	}
@@ -78,17 +86,21 @@ func (l *Level) HandleInput(d Direction) (a Action) {
 		} else {
 			a = Move
 		}
+	case Hazard:
+		a = TouchHazard
+		l.MovePlayerTo(d)
+		l.MovesLeft -= 1
 	case SpecialItem:
 		a = SpecialItemCollect
 		l.SpecialItemsCollected += 1
 		l.MovePlayerTo(d)
-	case Box, BoxSpecialItem:
+	case Box, BoxHazard, BoxSpecialItem:
 		if l.CanPushTo(d) {
 			a = PushBox
 			l.PushCollidable(d, occupiedState)
 		} else {
 			a = PunchBox
-			// Do nothing
+			// Punching a box does nothing in this game
 		}
 	case Skeleton:
 		if l.CanPushTo(d) {

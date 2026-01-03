@@ -8,8 +8,10 @@ const (
 	Empty OccupiedState = iota
 	Player
 	Box
-	BoxSpecialItem
+	Hazard
+	BoxHazard
 	SpecialItem
+	BoxSpecialItem
 	Skeleton
 	Goal
 )
@@ -28,6 +30,7 @@ const (
 	PushBox
 	AttackSkeleton
 	PushSkeleton
+	TouchHazard
 	SpecialItemCollect
 	Win
 	OutOfMoves
@@ -52,8 +55,10 @@ var RawStateToSymbol = map[rune]OccupiedState{
 	'_': Empty,
 	'p': Player,
 	'b': Box,
-	'B': BoxSpecialItem,
+	'h': Hazard,
+	'H': BoxHazard,
 	'i': SpecialItem,
+	'I': BoxSpecialItem,
 	's': Skeleton,
 	'g': Goal,
 }
@@ -62,8 +67,8 @@ var SymbolToRawState = map[OccupiedState]rune{
 	Empty:          '_',
 	Player:         'p',
 	Box:            'b',
-	BoxSpecialItem: 'B',
 	SpecialItem:    'i',
+	BoxSpecialItem: 'I',
 	Skeleton:       's',
 	Goal:           'g',
 }

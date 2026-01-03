@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	level, err := core.ParseRawLevelData("data/level1.txt")
+	level, err := core.ParseRawLevelData("data/level2.txt")
 	if err != nil {
 		panic("Failed to parse level data: " + err.Error())
 	}
@@ -17,12 +17,16 @@ func main() {
 	fmt.Printf("Player at: (%d, %d)\n", level.PlayerPos.Y, level.PlayerPos.X)
 	fmt.Println("--------------------------------------")
 
-	moves, found := solver.Solve(&level)
+	moves, found, iters := solver.Solve(&level)
 	if found {
-		fmt.Printf("Found solution in %d moves.\n", len(moves))
+		fmt.Printf(
+			"Found solution in %d moves. %d iterations in total.\n",
+			len(moves),
+			iters,
+		)
 		fmt.Print("Sequence: ")
 		solver.PrintSolution(moves)
 	} else {
-		fmt.Println("No solution found.")
+		fmt.Printf("No solution found in %d iterations.\n", iters)
 	}
 }

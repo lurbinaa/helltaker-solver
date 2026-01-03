@@ -43,7 +43,7 @@ func ParseRawLevelData(path string) (l Level, err error) {
 }
 
 func PrintRawLevelData(l *Level) {
-	// check borders
+	// Check borders
 	maxY, maxX := 0, 0
 	for p := range l.Tiles {
 		if p.Y > maxY {
