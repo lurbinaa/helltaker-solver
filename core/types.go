@@ -45,6 +45,7 @@ type Tiles map[Point]OccupiedState
 type Directions map[Direction]Point
 type Level struct {
 	PlayerPos             Point
+	UnderPlayer           OccupiedState
 	MovesLeft             int
 	SpecialItems          int
 	SpecialItemsCollected int
@@ -67,6 +68,8 @@ var SymbolToRawState = map[OccupiedState]rune{
 	Empty:          '_',
 	Player:         'p',
 	Box:            'b',
+	Hazard:         'h',
+	BoxHazard:      'H',
 	SpecialItem:    'i',
 	BoxSpecialItem: 'I',
 	Skeleton:       's',
@@ -77,6 +80,8 @@ var OccupiedStateNames = map[OccupiedState]string{
 	Empty:          "Empty",
 	Player:         "Player",
 	Box:            "Box",
+	Hazard:         "Hazard",
+	BoxHazard:      "BoxHazard",
 	BoxSpecialItem: "BoxSpecialItem",
 	SpecialItem:    "SpecialItem",
 	Skeleton:       "Skeleton",

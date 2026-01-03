@@ -46,7 +46,9 @@ func (l *Level) CheckAllAvailableMoves() (ds []Direction) {
 func (l *Level) MovePlayerTo(d Direction) {
 	target := l.CalculateOffset(d)
 
-	l.Tiles[l.PlayerPos] = Empty
+	l.Tiles[l.PlayerPos] = l.UnderPlayer
+	l.UnderPlayer = l.Tiles[target]
+
 	l.Tiles[target] = Player
 	l.PlayerPos = target
 }
