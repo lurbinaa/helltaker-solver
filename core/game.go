@@ -96,6 +96,18 @@ func (l *Level) HandleInput(d Direction) (a Action) {
 		a = SpecialItemCollect
 		l.SpecialItemsCollected += 1
 		l.MovePlayerTo(d)
+	case Key:
+		a = CollectKey
+		l.KeyCollected = true
+		l.MovePlayerTo(d)
+	case Chest:
+		if l.KeyCollected {
+			a = OpenChest
+			l.Tiles[target] = Empty
+			l.MovePlayerTo(d)
+		} else {
+			a = PunchChest
+		}
 	case Box, BoxHazard, BoxSpecialItem:
 		if l.CanPushTo(d) {
 			a = PushBox

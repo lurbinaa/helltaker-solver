@@ -13,6 +13,8 @@ const (
 	SpecialItem
 	BoxSpecialItem
 	Skeleton
+	Key
+	Chest
 	Goal
 )
 
@@ -26,12 +28,15 @@ const (
 const (
 	Move Action = iota
 	// Does nothing
-	PunchBox
 	PushBox
+	PunchBox
 	AttackSkeleton
 	PushSkeleton
 	TouchHazard
 	SpecialItemCollect
+	CollectKey
+	PunchChest
+	OpenChest
 	Win
 	OutOfMoves
 	Unknown
@@ -49,6 +54,7 @@ type Level struct {
 	MovesLeft             int
 	SpecialItems          int
 	SpecialItemsCollected int
+	KeyCollected          bool
 	Tiles                 Tiles
 }
 
@@ -61,6 +67,8 @@ var RawStateToSymbol = map[rune]OccupiedState{
 	'i': SpecialItem,
 	'I': BoxSpecialItem,
 	's': Skeleton,
+	'k': Key,
+	'c': Chest,
 	'g': Goal,
 }
 
@@ -73,6 +81,8 @@ var SymbolToRawState = map[OccupiedState]rune{
 	SpecialItem:    'i',
 	BoxSpecialItem: 'I',
 	Skeleton:       's',
+	Key:            'k',
+	Chest:          'c',
 	Goal:           'g',
 }
 
@@ -85,7 +95,25 @@ var OccupiedStateNames = map[OccupiedState]string{
 	BoxSpecialItem: "BoxSpecialItem",
 	SpecialItem:    "SpecialItem",
 	Skeleton:       "Skeleton",
+	Key:            "Key",
+	Chest:          "Chest",
 	Goal:           "Goal",
+}
+
+var ActionNames = map[Action]string{
+	Move:               "Move",
+	PushBox:            "PushBox",
+	PunchBox:           "PunchBox",
+	AttackSkeleton:     "AttackSkeleton",
+	PushSkeleton:       "PushSkeleton",
+	TouchHazard:        "TouchHazard",
+	SpecialItemCollect: "SpecialItemCollect",
+	CollectKey:         "CollectKey",
+	OpenChest:          "OpenChest",
+	PunchChest:         "PunchChest",
+	Win:                "Win",
+	OutOfMoves:         "OutOfMoves",
+	Unknown:            "Unknown",
 }
 
 var DirectionNames = map[Direction]string{

@@ -28,10 +28,6 @@ func Solve(level *core.Level) (ds []core.Direction, found bool, iters uint) {
 		}
 		visited[key] = true
 
-		if current.Level.CheckWin() {
-			return current.Moves, true, iters
-		}
-
 		if current.Level.MovesLeft <= 0 {
 			continue
 		}
@@ -74,9 +70,12 @@ func SerializeLevel(l *core.Level) string {
 	})
 
 	var sb strings.Builder
+
+	fmt.Fprintf(&sb, "K:%v|U:%v|", l.KeyCollected, l.UnderPlayer)
 	for _, p := range keys {
 		fmt.Fprintf(&sb, "%d,%d,%v|", p.Y, p.X, l.Tiles[p])
 	}
+
 	return sb.String()
 }
 
@@ -86,9 +85,11 @@ func CloneLevel(l *core.Level) *core.Level {
 
 	return &core.Level{
 		PlayerPos:             l.PlayerPos,
+		UnderPlayer:           l.UnderPlayer,
 		MovesLeft:             l.MovesLeft,
 		SpecialItems:          l.SpecialItems,
 		SpecialItemsCollected: l.SpecialItemsCollected,
+		KeyCollected:          l.KeyCollected,
 		Tiles:                 tiles,
 	}
 }

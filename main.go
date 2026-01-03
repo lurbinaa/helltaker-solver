@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	level, err := core.ParseRawLevelData("data/level2.txt")
+	level, err := core.ParseRawLevelData("data/level3.txt")
 	if err != nil {
 		panic("Failed to parse level data: " + err.Error())
 	}

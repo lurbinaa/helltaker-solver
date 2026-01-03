@@ -1,6 +1,7 @@
 # helltaker-solver
 ### TODO
-- [x] Handling loses
-- [x] Hazards (spikes) implementation
-- [x] Partial solver implementation
-- [ ] Keys and chests implementation
+- [x] Hazards (spikes)
+- [x] Partial solver
+- [x] Keys and chests
+- [ ] Stationary hazards
+- [ ] Upload remaining levels

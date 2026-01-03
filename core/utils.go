@@ -21,6 +21,7 @@ func ParseRawLevelData(path string) (l Level, err error) {
 
 	l.MovesLeft = m
 	l.Tiles = make(Tiles)
+	l.UnderPlayer = Empty
 	for y, line := range lines[1:] {
 		for x, char := range line {
 			if char == ' ' {
