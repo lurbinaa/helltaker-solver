@@ -26,6 +26,7 @@ func main() {
 		)
 		fmt.Print("Sequence: ")
 		solver.PrintSolution(moves)
+		core.DebugMovements(&level, moves)
 	} else {
 		fmt.Printf("No solution found in %d iterations.\n", iters)
 	}

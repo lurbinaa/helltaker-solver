@@ -80,3 +80,42 @@ func PrintTiles(t Tiles) {
 		)
 	}
 }
+
+func DebugMovements(l *Level, ds []Direction) {
+	fmt.Println("--------------------------------------")
+	fmt.Printf(
+		"Start: %d moves left, player at (%d,%d)\n",
+		l.MovesLeft,
+		l.PlayerPos.Y,
+		l.PlayerPos.X,
+	)
+
+	for i, m := range ds {
+		target := l.CalculateOffset(m)
+		tileState := l.Tiles[target]
+		movesBefore := l.MovesLeft
+		action := l.HandleInput(m)
+		movesAfter := l.MovesLeft
+		consumed := movesBefore - movesAfter
+		fmt.Printf(
+			"# %d: %s (%d,%d) | %s [%s] | %d → %d (-%d)\n",
+			i+1,
+			DirectionNames[m],
+			target.Y,
+			target.X,
+			ActionNames[action],
+			OccupiedStateNames[tileState],
+			movesBefore,
+			movesAfter,
+			consumed,
+		)
+	}
+
+	fmt.Printf(
+		"End: %d moves left, player at (%d,%d), collected key? = %v\n",
+		l.MovesLeft,
+		l.PlayerPos.Y,
+		l.PlayerPos.X,
+		l.KeyCollected,
+	)
+}
