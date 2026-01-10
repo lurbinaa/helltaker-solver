@@ -9,7 +9,7 @@ import (
 	"helltaker-solver/core"
 )
 
-func Solve(level *core.Level) (solutions []Solution, iters uint) {
+func Solve(level *core.Level) (sols []Solution, iters uint) {
 	visited := make(map[string]bool)
 	queue := []LevelSnapshot{{
 		Level: CloneLevel(level),
@@ -41,7 +41,7 @@ func Solve(level *core.Level) (solutions []Solution, iters uint) {
 			moves[len(current.Moves)] = d
 
 			if action == core.Win {
-				solutions = append(solutions, Solution{Moves: moves})
+				sols = append(sols, Solution{Moves: moves})
 			}
 
 			queue = append(queue, LevelSnapshot{
@@ -51,7 +51,7 @@ func Solve(level *core.Level) (solutions []Solution, iters uint) {
 		}
 	}
 
-	return solutions, iters
+	return sols, iters
 }
 
 // Serializes the level into a string with sorted coordinates

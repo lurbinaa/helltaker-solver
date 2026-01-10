@@ -60,28 +60,20 @@ func (l *Level) PushCollidable(d Direction, o OccupiedState) {
 	switch o {
 	case BoxHazard:
 		l.Tiles[current] = Hazard
-		if targetState == Hazard {
-			l.Tiles[target] = BoxHazard
-		} else {
-			l.Tiles[target] = Box
-		}
 	case BoxSpecialItem:
 		l.Tiles[current] = SpecialItem
-		if targetState == Hazard {
-			l.Tiles[target] = BoxHazard
-		} else {
-			l.Tiles[target] = Box
-		}
 	case Box:
 		l.Tiles[current] = Empty
-		if targetState == Hazard {
-			l.Tiles[target] = BoxHazard
-		} else {
-			l.Tiles[target] = Box
-		}
 	default:
 		l.Tiles[current] = Empty
 		l.Tiles[target] = o
+		return
+	}
+
+	if targetState == Hazard {
+		l.Tiles[target] = BoxHazard
+	} else {
+		l.Tiles[target] = Box
 	}
 }
 
