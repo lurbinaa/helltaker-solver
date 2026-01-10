@@ -10,7 +10,7 @@ func (l *Level) CanPushTo(d Direction) bool {
 	offset := DirectionOffsets[d]
 	behind := Point{l.PlayerPos.Y + 2*offset.Y, l.PlayerPos.X + 2*offset.X}
 	state, exists := l.Tiles[behind]
-	return exists && state == Empty
+	return exists && (state == Empty || state == Hazard)
 }
 
 func (l *Level) IsValidInput(d Direction) bool {
@@ -31,9 +31,6 @@ func (l *Level) CheckWin() bool {
 }
 
 func (l *Level) CheckAllAvailableMoves() (ds []Direction) {
-	// For some reason, go iterates maps randomly,
-	// with this approach we can achieve a consistent amount of
-	// total queue iterations
 	directions := []Direction{Up, Right, Down, Left}
 	for _, d := range directions {
 		if l.IsValidInput(d) {
@@ -58,13 +55,30 @@ func (l *Level) PushCollidable(d Direction, o OccupiedState) {
 	current := l.CalculateOffset(d)
 	// Tile behind
 	target := Point{current.Y + offset.Y, current.X + offset.X}
+	targetState := l.Tiles[target]
+
 	switch o {
 	case BoxHazard:
 		l.Tiles[current] = Hazard
-		l.Tiles[target] = Box
+		if targetState == Hazard {
+			l.Tiles[target] = BoxHazard
+		} else {
+			l.Tiles[target] = Box
+		}
 	case BoxSpecialItem:
 		l.Tiles[current] = SpecialItem
-		l.Tiles[target] = Box
+		if targetState == Hazard {
+			l.Tiles[target] = BoxHazard
+		} else {
+			l.Tiles[target] = Box
+		}
+	case Box:
+		l.Tiles[current] = Empty
+		if targetState == Hazard {
+			l.Tiles[target] = BoxHazard
+		} else {
+			l.Tiles[target] = Box
+		}
 	default:
 		l.Tiles[current] = Empty
 		l.Tiles[target] = o
