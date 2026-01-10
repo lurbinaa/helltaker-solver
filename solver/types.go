@@ -7,6 +7,10 @@ type LevelSnapshot struct {
 	Moves []core.Direction
 }
 
+type Solution struct {
+	Moves []core.Direction
+}
+
 var Arrows = map[core.Direction]string{
 	core.Up:    "↑",
 	core.Right: "→",

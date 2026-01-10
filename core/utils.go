@@ -56,7 +56,6 @@ func PrintRawLevelData(l *Level) {
 	}
 
 	fmt.Println(l.MovesLeft)
-
 	for y := 0; y <= maxY; y++ {
 		for x := 0; x <= maxX; x++ {
 			state, exists := l.Tiles[Point{Y: y, X: x}]
@@ -81,8 +80,15 @@ func PrintTiles(t Tiles) {
 	}
 }
 
+func PrintLine() {
+	length := 60
+	for range length {
+		fmt.Print("-")
+	}
+	fmt.Println()
+}
+
 func DebugMovements(l *Level, ds []Direction) {
-	fmt.Println("--------------------------------------")
 	fmt.Printf(
 		"Start: %d moves left, player at (%d,%d)\n",
 		l.MovesLeft,
@@ -112,10 +118,12 @@ func DebugMovements(l *Level, ds []Direction) {
 	}
 
 	fmt.Printf(
-		"End: %d moves left, player at (%d,%d), collected key? = %v\n",
+		"End: %d moves left, player at (%d,%d), special items collected = %d/%d, collected key? = %v\n",
 		l.MovesLeft,
 		l.PlayerPos.Y,
 		l.PlayerPos.X,
+		l.SpecialItemsCollected,
+		l.SpecialItems,
 		l.KeyCollected,
 	)
 }

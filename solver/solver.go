@@ -9,7 +9,7 @@ import (
 	"helltaker-solver/core"
 )
 
-func Solve(level *core.Level) (ds []core.Direction, found bool, iters uint) {
+func Solve(level *core.Level) (solutions []Solution, iters uint) {
 	visited := make(map[string]bool)
 	queue := []LevelSnapshot{{
 		Level: CloneLevel(level),
@@ -32,17 +32,17 @@ func Solve(level *core.Level) (ds []core.Direction, found bool, iters uint) {
 			continue
 		}
 
-		for _, ds := range current.Level.CheckAllAvailableMoves() {
+		for _, d := range current.Level.CheckAllAvailableMoves() {
 			level := CloneLevel(current.Level)
-			action := level.HandleInput(ds)
-
-			if action == core.Win {
-				return append(current.Moves, ds), true, iters
-			}
+			action := level.HandleInput(d)
 
 			moves := make([]core.Direction, len(current.Moves)+1)
 			copy(moves, current.Moves)
-			moves[len(current.Moves)] = ds
+			moves[len(current.Moves)] = d
+
+			if action == core.Win {
+				solutions = append(solutions, Solution{Moves: moves})
+			}
 
 			queue = append(queue, LevelSnapshot{
 				Level: level,
@@ -51,7 +51,7 @@ func Solve(level *core.Level) (ds []core.Direction, found bool, iters uint) {
 		}
 	}
 
-	return nil, false, iters
+	return solutions, iters
 }
 
 // Serializes the level into a string with sorted coordinates
@@ -71,7 +71,10 @@ func SerializeLevel(l *core.Level) string {
 
 	var sb strings.Builder
 
-	fmt.Fprintf(&sb, "K:%v|U:%v|", l.KeyCollected, l.UnderPlayer)
+	// Include all state that affects gameplay uniqueness
+	// Player position + what's under them is already in Tiles map
+	// But UnderPlayer matters because it can be SpecialItem vs Empty
+	fmt.Fprintf(&sb, "K:%v|U:%v|S:%v|", l.KeyCollected, l.UnderPlayer, l.SpecialItemsCollected)
 	for _, p := range keys {
 		fmt.Fprintf(&sb, "%d,%d,%v|", p.Y, p.X, l.Tiles[p])
 	}

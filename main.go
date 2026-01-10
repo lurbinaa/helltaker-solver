@@ -8,26 +8,34 @@ import (
 )
 
 func main() {
-	level, err := core.ParseRawLevelData("data/level3.txt")
+	level, err := core.ParseRawLevelData("data/level4.txt")
 	if err != nil {
 		panic("Failed to parse level data: " + err.Error())
 	}
 
 	fmt.Printf("Level data loaded. Available moves: %d\n", level.MovesLeft)
 	fmt.Printf("Player at: (%d, %d)\n", level.PlayerPos.Y, level.PlayerPos.X)
-	fmt.Println("--------------------------------------")
 
-	moves, found, iters := solver.Solve(&level)
-	if found {
+	solutions, iters := solver.Solve(&level)
+	if len(solutions) > 0 {
+		for _, sol := range solutions {
+			core.PrintLine()
+			fmt.Print("Sequence: ")
+			solver.PrintSolution(sol.Moves)
+			new, _ := core.ParseRawLevelData("data/level4.txt")
+			core.DebugMovements(&new, sol.Moves)
+		}
+
+		core.PrintLine()
+
 		fmt.Printf(
-			"Found solution in %d moves. %d iterations in total.\n",
-			len(moves),
+			"Found %d solutions in %d iterations.\n",
+			len(solutions),
 			iters,
 		)
-		fmt.Print("Sequence: ")
-		solver.PrintSolution(moves)
-		core.DebugMovements(&level, moves)
 	} else {
+		core.PrintLine()
+
 		fmt.Printf("No solution found in %d iterations.\n", iters)
 	}
 }
