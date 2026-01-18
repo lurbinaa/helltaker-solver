@@ -10,11 +10,16 @@ const (
 	Box
 	Hazard
 	BoxHazard
+	SwitchHazardEven
+	SwitchHazardOdd
+	BoxSwitchHazardEven
+	BoxSwitchHazardOdd
 	SpecialItem
 	BoxSpecialItem
-	Skeleton
 	Key
+	BoxKey
 	Chest
+	Skeleton
 	Goal
 )
 
@@ -28,11 +33,15 @@ const (
 const (
 	Move Action = iota
 	// Does nothing
-	PushBox
 	PunchBox
+	PushBox
 	AttackSkeleton
 	PushSkeleton
 	TouchHazard
+	TouchHazardPushBox
+	TouchHazardPunchBox
+	TouchHazardAttackSkeleton
+	TouchHazardPushSkeleton
 	SpecialItemCollect
 	CollectKey
 	PunchChest
@@ -52,6 +61,7 @@ type Level struct {
 	PlayerPos             Point
 	UnderPlayer           OccupiedState
 	MovesLeft             int
+	MovesCount            int
 	SpecialItems          int
 	SpecialItemsCollected int
 	KeyCollected          bool
@@ -64,56 +74,74 @@ var RawStateToSymbol = map[rune]OccupiedState{
 	'b': Box,
 	'h': Hazard,
 	'H': BoxHazard,
+	'e': SwitchHazardEven,
+	'o': SwitchHazardOdd,
+	'E': BoxSwitchHazardEven,
+	'O': BoxSwitchHazardOdd,
 	'i': SpecialItem,
 	'I': BoxSpecialItem,
 	's': Skeleton,
 	'k': Key,
+	'K': BoxKey,
 	'c': Chest,
 	'g': Goal,
 }
 
 var SymbolToRawState = map[OccupiedState]rune{
-	Empty:          '_',
-	Player:         'p',
-	Box:            'b',
-	Hazard:         'h',
-	BoxHazard:      'H',
-	SpecialItem:    'i',
-	BoxSpecialItem: 'I',
-	Skeleton:       's',
-	Key:            'k',
-	Chest:          'c',
-	Goal:           'g',
+	Empty:               '_',
+	Player:              'p',
+	Box:                 'b',
+	Hazard:              'h',
+	BoxHazard:           'H',
+	SwitchHazardEven:    'e',
+	SwitchHazardOdd:     'o',
+	BoxSwitchHazardEven: 'E',
+	BoxSwitchHazardOdd:  'O',
+	SpecialItem:         'i',
+	BoxSpecialItem:      'I',
+	Key:                 'k',
+	BoxKey:              'K',
+	Chest:               'c',
+	Skeleton:            's',
+	Goal:                'g',
 }
 
 var OccupiedStateNames = map[OccupiedState]string{
-	Empty:          "Empty",
-	Player:         "Player",
-	Box:            "Box",
-	Hazard:         "Hazard",
-	BoxHazard:      "BoxHazard",
-	BoxSpecialItem: "BoxSpecialItem",
-	SpecialItem:    "SpecialItem",
-	Skeleton:       "Skeleton",
-	Key:            "Key",
-	Chest:          "Chest",
-	Goal:           "Goal",
+	Empty:               "Empty",
+	Player:              "Player",
+	Box:                 "Box",
+	Hazard:              "Hazard",
+	BoxHazard:           "BoxHazard",
+	SwitchHazardEven:    "SwitchHazardEven",
+	SwitchHazardOdd:     "SwitchHazardOdd",
+	BoxSwitchHazardEven: "BoxSwitchHazardEven",
+	BoxSwitchHazardOdd:  "BoxSwitchHazardOdd",
+	SpecialItem:         "SpecialItem",
+	BoxSpecialItem:      "BoxSpecialItem",
+	BoxKey:              "BoxKey",
+	Key:                 "Key",
+	Chest:               "Chest",
+	Skeleton:            "Skeleton",
+	Goal:                "Goal",
 }
 
 var ActionNames = map[Action]string{
-	Move:               "Move",
-	PushBox:            "PushBox",
-	PunchBox:           "PunchBox",
-	AttackSkeleton:     "AttackSkeleton",
-	PushSkeleton:       "PushSkeleton",
-	TouchHazard:        "TouchHazard",
-	SpecialItemCollect: "SpecialItemCollect",
-	CollectKey:         "CollectKey",
-	OpenChest:          "OpenChest",
-	PunchChest:         "PunchChest",
-	Win:                "Win",
-	OutOfMoves:         "OutOfMoves",
-	Unknown:            "Unknown",
+	Move:                      "Move",
+	PushBox:                   "PushBox",
+	PunchBox:                  "PunchBox",
+	AttackSkeleton:            "AttackSkeleton",
+	PushSkeleton:              "PushSkeleton",
+	TouchHazard:               "TouchHazard",
+	TouchHazardPushBox:        "TouchHazardPushBox",
+	TouchHazardPunchBox:       "TouchHazardPunchBox",
+	TouchHazardAttackSkeleton: "TouchHazardAttackSkeleton",
+	TouchHazardPushSkeleton:   "TouchHazardPushSkeleton",
+	SpecialItemCollect:        "SpecialItemCollect",
+	CollectKey:                "CollectKey",
+	OpenChest:                 "OpenChest",
+	PunchChest:                "PunchChest",
+	Win:                       "Win",
+	Unknown:                   "Unknown",
 }
 
 var DirectionNames = map[Direction]string{

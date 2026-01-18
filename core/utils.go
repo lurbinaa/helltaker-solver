@@ -16,7 +16,9 @@ func ParseRawLevelData(path string) (l Level, err error) {
 	lines := strings.Split(string(data), "\n")
 	m, err := strconv.Atoi(strings.TrimSpace(lines[0]))
 	if err != nil {
-		panic("Invalid level data: first line must be an integer")
+		panic(
+			"Invalid level data: first line must be an integer containing the numbers of available moves",
+		)
 	}
 
 	l.MovesLeft = m
