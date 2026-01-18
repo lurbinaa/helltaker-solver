@@ -42,6 +42,7 @@ func Solve(level *core.Level) (sols []Solution, iters uint) {
 
 			if action == core.Win {
 				sols = append(sols, Solution{Moves: moves})
+				continue
 			}
 
 			queue = append(queue, LevelSnapshot{
@@ -74,7 +75,13 @@ func SerializeLevel(l *core.Level) string {
 	// Include all state that affects gameplay uniqueness
 	// Player position + what's under them is already in Tiles map
 	// But UnderPlayer matters because it can be SpecialItem vs Empty
-	fmt.Fprintf(&sb, "K:%v|U:%v|S:%v|", l.KeyCollected, l.UnderPlayer, l.SpecialItemsCollected)
+	fmt.Fprintf(&sb,
+		"%v|%v|%v|%v|",
+		l.KeyCollected,
+		l.UnderPlayer,
+		l.SpecialItemsCollected,
+		l.MovesLeft,
+	)
 	for _, p := range keys {
 		fmt.Fprintf(&sb, "%d,%d,%v|", p.Y, p.X, l.Tiles[p])
 	}
@@ -93,6 +100,7 @@ func CloneLevel(l *core.Level) *core.Level {
 		SpecialItems:          l.SpecialItems,
 		SpecialItemsCollected: l.SpecialItemsCollected,
 		KeyCollected:          l.KeyCollected,
+		MovesCount:            l.MovesCount,
 		Tiles:                 tiles,
 	}
 }
